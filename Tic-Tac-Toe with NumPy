@@ -1,0 +1,85 @@
+def create_board():
+    return [[" " for _ in range(3)] for _ in range(3)]
+
+def print_board(board):
+    print("\n   0   1   2")
+    print("  " + "---+" * 2 + "---")
+    for i, row in enumerate(board):
+        print(f"{i}  " + " | ".join(row))
+        if i < 2:
+            print("  " + "---+" * 2 + "---")
+    print()
+
+def is_board_full(board):
+    for row in board:
+        if " " in row:
+            return False
+    return True
+
+def check_win(board, player):
+    for i in range(3):
+        if all(board[i][j] == player for j in range(3)): 
+            return True
+        if all(board[j][i] == player for j in range(3)):  
+            return True
+
+    if all(board[i][i] == player for i in range(3)):  
+        return True
+    if all(board[i][2 - i] == player for i in range(3)): 
+        return True
+    return False
+
+def get_move(player, board):
+    while True:
+        try:
+            value = f"Player {player}, enter your move as 'row col' (e.g., 0 2): "
+            move = input(value).split()
+
+            if len(move) != 2:
+                print("Invalid input format. Please enter exactly two numbers.")
+                continue
+
+            row, col = int(move[0]), int(move[1])
+
+            if row not in range(3) or col not in range(3):
+                print("Indices out of bounds! Choose numbers between 0 and 2.")
+                continue
+
+            if board[row][col] != " ":
+                print("That square is already taken! Try another one.")
+                continue
+
+            return row, col
+
+        except ValueError:
+            print("Invalid input. Please enter valid integers.")
+
+
+def play_game():
+    board = create_board()
+    current_player = "X"
+
+    print_board(board)
+
+    while True:
+        row, col = get_move(current_player, board)
+        board[row][col] = current_player
+
+        print_board(board)
+
+        if check_win(board, current_player):
+            print(f" Player {current_player} wins the game! ")
+            break
+
+        if is_board_full(board):
+            print("The board is full.")
+            break
+
+        if current_player == "X":
+            current_player = "O"
+        else:
+            current_player = "X"
+
+
+if __name__ == "__main__":
+    play_game()
